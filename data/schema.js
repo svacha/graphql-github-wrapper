@@ -8,12 +8,12 @@ import {
  GraphQLID,
  GraphQLBoolean,
  GraphQLFloat
-} from ‘graphql’;
+} from 'graphql';
 
 
 const query = new GraphQLObjectType({
-  name: “Query”,
-  description: “First GraphQL Server Config — Yay!”,
+  name: "Query",
+  description: "First GraphQL Server Config — Yay!",
   fields: () => ({
     hello: {
       type: GraphQLString, 
@@ -21,7 +21,7 @@ const query = new GraphQLObjectType({
       args: {
         name: {
           type: new GraphQLNonNull(GraphQLString),
-          description: “Name you want to say hi to :)”,
+          description: "Name you want to say hi to :)",
         }
       },
       resolve: (_,args) => {
