@@ -12,6 +12,33 @@ import {
 
 import axios from 'axios';
 
+function usersFollowing() {
+    return {
+      type: new GraphQLList(RepoInfoType),
+      resolve: (obj) => {
+        const brackIndex = obj.following_url.indexOf("{");
+        const url =  obj.following_url.slice(0, brackIndex);
+        return axios.get(url)
+                    .then(function(response) {
+                        return response.data
+                    });
+      }
+    }
+}
+
+
+function followingUrl() {
+  return {
+    type: GraphQLString,
+    description: "URI to get data on the people this person follows",
+    resolve: (obj) => {
+      const brackIndex = obj.following_url.indexOf("{");
+      return obj.following_url.slice(0, brackIndex);
+    }
+  };
+}
+
+
 let UserInfoType = new GraphQLObjectType({
   name: "UserInfo",
   description: "Basic information on a GitHub user",
@@ -23,24 +50,8 @@ let UserInfoType = new GraphQLObjectType({
     "url": { type: GraphQLString },
     "html_url": { type: GraphQLString },
     "followers_url": { type: GraphQLString },
-    "following_url": {
-      type: GraphQLString,
-      resolve: (obj) => {
-        const brackIndex = obj.following_url.indexOf("{");
-        return obj.following_url.slice(0, brackIndex);
-      }
-    },
-    "users_following": {
-      type: new GraphQLList(RepoInfoType),
-      resolve: (obj) => {
-        const brackIndex = obj.following_url.indexOf("{");
-        const url =  obj.following_url.slice(0, brackIndex);
-        return axios.get(url)
-                    .then(function(response) {
-                        return response.data
-                    });
-      }
-    },
+    "following_url": followingUrl(),
+    "users_following": usersFollowing(),
     "gists_url": { type: GraphQLString },
     "starred_url": { type: GraphQLString },
     "subscriptions_url": { type: GraphQLString },
